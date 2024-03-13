@@ -24,7 +24,7 @@ where
     dc: DC,
 
     /// Reset pin.
-    rst: RST,
+    rst: Option<RST>,
 
     /// Whether the display is RGB (true) or BGR (false)
     rgb: bool,
@@ -58,7 +58,7 @@ where
     pub fn new(
         spi: SPI,
         dc: DC,
-        rst: RST,
+        rst: Option<RST>,
         rgb: bool,
         inverted: bool,
         width: u32,
@@ -119,11 +119,14 @@ where
     where
         DELAY: DelayNs,
     {
-        self.rst.set_high().map_err(|_| ())?;
-        delay.delay_ms(10);
-        self.rst.set_low().map_err(|_| ())?;
-        delay.delay_ms(10);
-        self.rst.set_high().map_err(|_| ())
+        if let Some(rst) = &mut self.rst {
+            rst.set_high().map_err(|_| ())?;
+            delay.delay_ms(10);
+            rst.set_low().map_err(|_| ())?;
+            delay.delay_ms(10);
+            rst.set_high().map_err(|_| ())?;
+        }
+        Ok(())
     }
 
     fn write_command(&mut self, command: Instruction, params: &[u8]) -> Result<(), ()> {

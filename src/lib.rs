@@ -129,7 +129,7 @@ where
         Ok(())
     }
 
-    fn write_command(&mut self, command: Instruction, params: &[u8]) -> Result<(), ()> {
+    pub fn write_command(&mut self, command: Instruction, params: &[u8]) -> Result<(), ()> {
         self.dc.set_low().map_err(|_| ())?;
         self.spi.write(&[command as u8]).map_err(|_| ())?;
         if !params.is_empty() {

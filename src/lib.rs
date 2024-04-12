@@ -246,7 +246,7 @@ where
         self.write_pixels_buffered(colors)
     }
 
-    fn clear(&mut self, color: u16) -> Result<(), ()> {
+    pub fn clear(&mut self, color: u16) -> Result<(), ()> {
         self.set_pixels_buffered(
             0,
             0,
